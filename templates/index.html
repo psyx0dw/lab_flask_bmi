@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор ИМТ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 550px;
+            width: 100%;
+            padding: 50px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background-color: #f8f9ff;
+        }
+
+        input[type="number"]::placeholder {
+            color: #999;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .bmi-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .bmi-underweight {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .bmi-normal {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .bmi-overweight {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .bmi-obesity {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .error {
+            background-color: #ffebee !important;
+            border-left-color: #c62828 !important;
+        }
+
+        .error-text {
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .music-player {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            display: none;
+        }
+
+        .music-player.active {
+            display: block;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .music-player h3 {
+            color: #ff6f00;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .music-player audio {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 0;
+        }
+
+        .gif-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+            display: none;
+            text-align: center;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .gif-container.active {
+            display: block;
+        }
+
+        .gif-container h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .motivation-gif {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .info {
+            background: #f0f7ff;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .info ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .info li {
+            padding: 4px 0;
+        }
+
+        .info li:before {
+            content: "✓ ";
+            color: #1976d2;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .result {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Калькулятор ИМТ</h1>
+            <p>Узнайте ваш индекс массы тела и получите информацию о состоянии здоровья</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="height">📏 Рост (см)</label>
+                <input 
+                    type="number" 
+                    id="height" 
+                    name="height" 
+                    step="0.1" 
+                    min="50" 
+                    max="300"
+                    placeholder="Например, 175"
+                    required
+                >
+                <div class="input-hint">Введите ваш рост в сантиметрах</div>
+            </div>
+
+            <div class="form-group">
+                <label for="weight">⚖️ Вес (кг)</label>
+                <input 
+                    type="number" 
+                    id="weight" 
+                    name="weight" 
+                    step="0.1" 
+                    min="20" 
+                    max="500"
+                    placeholder="Например, 70"
+                    required
+                >
+                <div class="input-hint">Введите ваш вес в килограммах</div>
+            </div>
+
+            <button type="submit">Рассчитать ИМТ</button>
+        </form>
+
+        {% if bmi is not none %}
+            <div class="result {% if 'Ошибка' in bmi|string %}error{% endif %}">
+                <h2>✨ Результат расчета</h2>
+                
+                <div class="result-item">
+                    <span class="result-label">Ваш ИМТ:</span>
+                    {% if "Ошибка" in bmi|string %}
+                        <span class="result-value error-text">{{ category }}</span>
+                    {% else %}
+                        <span class="result-value">{{ bmi }}</span>
+                    {% endif %}
+                </div>
+
+                {% if "Ошибка" not in bmi|string %}
+                <div class="result-item">
+                    <span class="result-label">Категория:</span>
+                    <span class="bmi-badge 
+                        {% if category == 'Недостаточная масса тела' %}bmi-underweight
+                        {% elif category == 'Нормальная масса тела' %}bmi-normal
+                        {% elif category == 'Избыточная масса тела' %}bmi-overweight
+                        {% else %}bmi-obesity{% endif %}">
+                        {{ category }}
+                    </span>
+                </div>
+
+                <!-- Плеер музыки при избыточном весе -->
+                {% if play_music %}
+                <div class="music-player active">
+                    <h3>🎵 Ай маладес!</h3>
+                    <audio autoplay controls>
+                        <source src="{{ url_for('static', filename='толстый.mp3') }}" type="audio/mpeg">
+                        Ваш браузер не поддерживает воспроизведение аудио
+                    </audio>
+                </div>
+
+                <!-- GIF анимация танцующего кота Гарфилда -->
+                <div class="gif-container active">
+                    <h3>💪 Сбрось вес!</h3>
+                    <img src="https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif" alt="Танцующий Гарфилд" class="motivation-gif">
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="info">
+            <div class="info-title">📋 Справочная информация об ИМТ</div>
+            <ul>
+                <li><strong>ИМТ &lt; 18.5</strong> — Недостаточная масса тела</li>
+                <li><strong>18.5 ≤ ИМТ &lt; 25</strong> — Нормальная масса тела</li>
+                <li><strong>25 ≤ ИМТ &lt; 30</strong> — Избыточная масса тела</li>
+                <li><strong>ИМТ ≥ 30</strong> — Ожирение</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
